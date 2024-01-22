@@ -20,7 +20,7 @@ const nodemailer=require("nodemailer")
   const mailOptions = {
     from: "ameer.hamza102002@gmail.com", // Your mail email address
     to: email,
-    subject: "One time use OTP By Car Rental System",
+    subject: "One time use OTP by Car Rental System",
     text: `Your OTP is: ${otp}`,
   };
 

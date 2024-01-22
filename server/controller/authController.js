@@ -157,11 +157,20 @@ router.post("/reset-password", async (req, res) => {
 });
 
 router.post("/update-profile",verifyAccessToken, async(req, res) => {
-    const { userId, name, phone, postCode, address, gender } = req.body;
+
+    const {  name, phone, postCode, address, gender } = req.body;
+    const userId=req.user.userId
+
+    const user = await Person.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+
   console.log(req.file);
     // If a file is uploaded, handle the file upload
     if (req.file) {
-      req.uploadType = "profilePicture";
+      // req.uploadType = "profilePicture";
       upload(req, res, async (err) => {
         if (err) {
           console.error("Error uploading profile picture:", err);
@@ -223,6 +232,35 @@ router.post("/update-profile",verifyAccessToken, async(req, res) => {
       }
     }
   });
+
+router.get("/profile", verifyAccessToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await Person.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const userProfile = {
+      _id: user._id,
+      name: user.name,
+      phone: user.phone,
+      email: user.email,
+      address: user.address,
+      occupation: user.occupation,
+      postCode: user.postCode,
+      gender: user.gender,
+      profilePicture: user.profilePicture,
+      favorites:user.favorites,
+      createdAt: user.createdAt,
+    };
+    return res.status(200).json({ user: userProfile });
+  } catch (error) {
+    console.error("Error while fetching user profile", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 
 module.exports=router

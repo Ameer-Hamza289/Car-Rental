@@ -5,16 +5,17 @@ const cors=require("cors")
 const mongoose=require("mongoose")
 const bodyParser=require("body-parser")
 const multer=require("multer")
-// const verifyAccessToken=require('./utils/veriftToken')
+const { verifyAccessToken } = require('./utils/verifyToken');
 // const port = 8000;
 dotenv.config()
 
 
 app.use(cors())
 app.use(express.json())
-app.use("/", express.static("public/uploads"));
+app.use(express.urlencoded({ extended: true }));
+// app.use("/", express.static("public/uploads"));
 // app.use(bodyParser. text({type: '/'}));
-app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+// app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 app.use(multer().single('profilePicture'));
 // app.use(bodyParser.json());
 
@@ -25,7 +26,6 @@ app.get('/', (req, res) => {
 
 
 const authRoutes=require('./controller/authController');
-const { verifyAccessToken } = require('./utils/verifyToken');
 app.use('/auth',authRoutes)
 
 //middleware

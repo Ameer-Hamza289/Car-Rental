@@ -14,18 +14,20 @@
   const multer = require('multer');
 const path = require('path');
 
-// Set storage engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let uploadPath;
-    if (req.uploadType === 'profilePicture') {
-      uploadPath = '../public/uploads/profile/';
-    } else if (req.uploadType === 'carImage') {
-      uploadPath = '../public/uploads/car/';
-    }
-
-    cb(null, uploadPath);
+    cb(null, 'public/uploads/');
   },
+  // destination: function (req, file, cb) {
+  //   let uploadPath;
+  //   if (req.uploadType === 'profilePicture') {
+  //     uploadPath = '../public/uploads/profile/';
+  //   } else if (req.uploadType === 'carImage') {
+  //     uploadPath = '../public/uploads/car/';
+  //   }
+
+  //   cb(null, uploadPath);
+  // },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   },
@@ -44,6 +46,11 @@ const upload = multer({
       cb('Error: Only image files are allowed!');
     }
   },
-}).single('image');
+}).single('profilePicture')
+// .then((res)=>{
+//   console.log("Upload Success");
+// }).catch((err)=>{
+//   console.error(err)
+// })
 
 module.exports = upload;

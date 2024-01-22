@@ -39,6 +39,22 @@ const PersonSchema = new mongoose.Schema({
   address: { type: String },
   postCode: { type: String },
   gender: { type: String },
+  drivingLicense:{type:String},
+  licenseImages:{
+    front:{
+      type:String,
+      default:null
+    },
+    back:{
+      type:String,
+      default:null
+    }
+  },
+  favorites:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Car",
+    required:true,
+  }],
   createdAt: {
     type: Date,
     default: Date.now,

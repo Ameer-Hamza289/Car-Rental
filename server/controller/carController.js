@@ -2,6 +2,7 @@ const express = require("express");
 const Car = require("../model/car");
 const Person = require("../model/person");
 const router = express.Router();
+const { verifyAccessToken } = require("../utils/verifyToken");
 
 router.post("/add-car", async (req, res) => {
   try {
@@ -96,7 +97,59 @@ router.post("/add-review", async (req, res) => {
   }
 });
 
+router.get("/favorite-cars", async (req, res) => {
+  try {
+    const userId = req.user.userId;
 
+    const user = await Person.findById(userId).populate("favorites");
+    const favoriteCars=user.favorites
 
+    res.status(200).json({ data: favoriteCars });
+  } catch (error) {
+    console.error("Error fetching favorite cars", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.post("/toggle-favorite/:carId", async (req, res) => {
+  try {
+    const carId = req.params.carId;
+    const userId = req.user.userId;
+
+    const user = await Person.findById(userId);
+    const car = await Car.findById(carId);
+    if (!user) {
+      return res.status(404).json({ message: "User  not found" });
+    }
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+
+    const carIndex = user.favorites.indexOf(carId);
+    let actionMessage;
+    if (carIndex === -1) {
+      // If not in favorites, add the car
+      user.favorites.push(carId);
+      actionMessage = "Car added to favorites successfully!";
+    } else {
+      // If in favorites, remove the car
+      user.favorites.splice(carIndex, 1);
+      actionMessage = "Car removed from favorites successfully!";
+    }
+
+    await user.save();
+
+    const updatedFavoriteCars = await Car.find({
+      _id: { $in: user.favorites },
+    });
+
+    return res
+      .status(200)
+      .json({ message: actionMessage, favoriteCars: updatedFavoriteCars });
+  } catch (error) {
+    console.error("Error while toggling favorite Car", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
 module.exports = router;
