@@ -2,7 +2,7 @@ const express = require("express");
 const Car = require("../model/car");
 const Person = require("../model/person");
 const router = express.Router();
-const { verifyAccessToken } = require("../utils/verifyToken");
+
 
 router.post("/add-car", async (req, res) => {
   try {
@@ -151,5 +151,27 @@ router.post("/toggle-favorite/:carId", async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+
+
+// rent the car controllers start from here
+
+router.post("/rent-now/:carId",async(req,res)=>{    //in progress
+  try {
+
+    const userId=req.user.userId
+    const carId=req.params.carId
+
+
+
+return res.status(200).json({message:"Api Hit!"})
+
+  } catch (error) {
+    console.error("Error while booking the car",error);
+    return res.status(500).json({message:"Internal Server Error"})
+  }
+})
+
+
 
 module.exports = router;
