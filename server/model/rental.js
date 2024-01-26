@@ -1,6 +1,19 @@
 const mongoose=require("mongoose");
 
 
+const SummarySchema=new mongoose.Schema({
+    car:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"Car"
+    },
+    user:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:true,
+        ref:"Person"
+    }
+})
+
 const RentalSchema=new mongoose.Schema({
     billingInfo:{
         name:{
@@ -22,7 +35,7 @@ const RentalSchema=new mongoose.Schema({
     },
     rentalInfo:{
         pickUp:{
-            locations:{
+            location:{
                 type:String,
                 required:true
             },
@@ -84,6 +97,20 @@ const RentalSchema=new mongoose.Schema({
               return this.paymentMethod.type === "debitCard";
             },
         }
-    }
+    },
+    status: {
+        type: String,
+        enum: ["pending", "ongoing", "completed"],
+        default: "pending",
+      },
+      totalAmount: {
+        type: Number,
+        required: true,
+      },
+    summary:SummarySchema
 
 })
+
+const Rental=mongoose.model("Rental",RentalSchema)
+
+module.exports=Rental

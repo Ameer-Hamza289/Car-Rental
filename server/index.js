@@ -26,13 +26,16 @@ app.get('/', (req, res) => {
 
 
 const authRoutes=require('./controller/authController');
+const carRoutes=require('./controller/carController');
+const rentalRoutes=require("./controller/rentalController")
 app.use('/auth',authRoutes)
 
 //middleware
 app.use(verifyAccessToken)
 
-const carRoutes=require('./controller/carController');
 app.use("/car",carRoutes)
+
+app.use("/rental",rentalRoutes)
 
 app.listen(process.env.port, () => {
   console.log(`Server is running at http://localhost:${process.env.port}`);   
